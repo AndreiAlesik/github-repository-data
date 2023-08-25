@@ -24,10 +24,7 @@ public class RepositoryControllerBean implements RepositoryController {
     @Override
     public ResponseObject<?> tutorRegisterAccount(
             String githubOwner
-
     ) {
-
-
         return repositoryService.getUserRepositories(githubOwner);
     }
 }
