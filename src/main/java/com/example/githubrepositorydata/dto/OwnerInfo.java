@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 public record OwnerInfo(
         String name,
         Integer forks,
-        @JsonProperty("updated_at")
-        LocalDateTime lastCommit
+
+        @JsonProperty("url")
+        String url
+
 ) {}

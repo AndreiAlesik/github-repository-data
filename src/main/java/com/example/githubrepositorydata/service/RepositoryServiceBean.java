@@ -8,10 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +28,21 @@ public class RepositoryServiceBean implements RepositoryService {
 
         List<Repository> filteredRepositoryNames = ownerInfo.stream()
                 .filter(repo -> repo.forks() >= 1)
-                .map(repo -> new Repository(repo.name(), repo.lastCommit()))
+                .map(repo -> {
+                    String repoName = repo.name();
+                    String repoUrl = repo.url();
+
+                    ResponseEntity<Map[]> commitsResponse = restTemplate.getForEntity(repoUrl + "/commits", Map[].class);
+                    Map[] commits = commitsResponse.getBody();
+
+                    if (commits != null && commits.length > 0) {
+                        String latestCommitSha = (String) commits[0].get("sha");
+                        return new Repository(repoName, latestCommitSha);
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         HttpStatus httpStatus = HttpStatus.OK;
