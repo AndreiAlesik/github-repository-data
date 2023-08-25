@@ -22,7 +22,7 @@ public class RepositoryControllerBean implements RepositoryController {
     }
 
     @Override
-    public ResponseObject<?> tutorRegisterAccount(
+    public ResponseObject<?> getUserInfo(
             String githubOwner
     ) {
         return repositoryService.getUserRepositories(githubOwner);
