@@ -1,6 +1,6 @@
 package com.example.githubrepositorydata.service;
 
-import com.example.githubrepositorydata.dto.Link;
+import com.example.githubrepositorydata.dto.Repository;
 import com.example.githubrepositorydata.dto.OwnerInfo;
 import com.example.githubrepositorydata.dto.ResponseObject;
 import org.springframework.http.HttpStatus;
@@ -29,9 +29,9 @@ public class RepositoryServiceBean implements RepositoryService {
             return new ResponseObject<>(HttpStatus.BAD_REQUEST, "USER_NOT_FOUND");
         }
 
-        List<Link> filteredRepositoryNames = ownerInfo.stream()
+        List<Repository> filteredRepositoryNames = ownerInfo.stream()
                 .filter(repo -> repo.forks() >= 1)
-                .map(repo -> new Link(repo.name()))
+                .map(repo -> new Repository(repo.name(), repo.lastCommit()))
                 .collect(Collectors.toList());
 
         HttpStatus httpStatus = HttpStatus.OK;
