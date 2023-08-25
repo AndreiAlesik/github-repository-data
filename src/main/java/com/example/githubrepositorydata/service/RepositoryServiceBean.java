@@ -21,14 +21,14 @@ public class RepositoryServiceBean implements RepositoryService {
     public ResponseObject<?> getUserRepositories(String githubOwner) {
         var restTemplate = new RestTemplate();
         String GIT_HUB_API = "https://api.github.com/users/";
-        ResponseEntity<OwnerInfo[]> responseEntity = restTemplate.getForEntity(GIT_HUB_API +githubOwner+"/repos", OwnerInfo[].class);
         ArrayList<OwnerInfo> ownerInfo;
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+        try {
+            ResponseEntity<OwnerInfo[]> responseEntity = restTemplate.getForEntity(GIT_HUB_API + githubOwner + "/repos", OwnerInfo[].class);
             ownerInfo = new ArrayList<>(Arrays.asList(Objects.requireNonNull(responseEntity.getBody())));
-        }
-        else {
+        } catch (Exception e) {
             return new ResponseObject<>(HttpStatus.BAD_REQUEST, "USER_NOT_FOUND");
         }
+
         List<Link> filteredRepositoryNames = ownerInfo.stream()
                 .filter(repo -> repo.forks() >= 1)
                 .map(repo -> new Link(repo.name()))
